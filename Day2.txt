@@ -1,0 +1,230 @@
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<iostream>
+using namespace std;
+int main()
+{
+	int n,w,k;
+	scanf("%d %d %d", &n, &w, &k);
+	int a[10000];
+	int b[10000];
+	for (int i = 0; i < 10000; i++) b[i] = 0;
+	int count = 0;
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &a[i]);
+		if (a[i] > w)
+		{
+			b[count] = i;
+			count++;
+		}
+	}
+	long long time = 0;
+	for (int i = 0; i < count; i++)
+	{
+		time += a[b[i]] + k * i-w;
+		for (int j = b[i] + 1; j < b[i + 1]; j++)
+		{
+			if (a[j] + k * (i + 1) > w) time += a[j] + k * (i + 1) - w;
+		}
+	}
+	for (int j = b[count - 1]+1; j < n; j++)
+	{
+		if (a[j] + k * count > w) time += a[j] + k * count - w;
+	}
+
+	printf("%d", time);
+	return 0;
+}
+
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<iostream>
+using namespace std;
+int main()
+{
+	int n, w, k;
+	scanf("%d %d %d", &n, &w, &k);
+	int a[10000];
+	int b[10000];
+	for (int i = 0; i < 10000; i++) b[i] = 0;
+	int count = 0;
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &a[i]);
+		if (a[i] > w)
+		{
+			b[count] = i;
+			count++;
+		}
+	}
+	long long time = 0;
+	for (int i = 0; i < count-1; i++)
+	{
+		for (int j = b[i] + 1; j <= b[i + 1]; j++) a[j] += k * (i+1);
+	}
+	for (int j = b[count-1] + 1; j < n; j++) a[j] += k * count;
+	for (int i = b[0]; i < n; i++)
+	{
+		if (a[i] > w) time += a[i] - w;
+	}
+	printf("%d", time);
+	return 0;
+}
+
+
+
+
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<iostream>
+using namespace std;
+int a[60][5];
+int all = 0;
+void digui(int ceng, int wei, int n)
+{
+	if (ceng == n)
+	{
+		all++;
+		return;
+	}
+	if (wei == 1)
+	{
+		if (a[ceng + 1][1] == 0)
+		{
+			a[ceng + 1][1] = 1;
+			digui(ceng + 1, 1, n);
+			a[ceng + 1][1] = 0;
+		}
+		if (a[ceng + 1][2] == 0 && (a[ceng + 1][1] != 2 && a[ceng][2] != 0))
+		{
+			a[ceng + 1][2] = 1;
+			digui(ceng + 1, 2, n);
+			a[ceng + 1][2] = 0;
+		}
+	}
+	else
+	{
+		if (a[ceng + 1][2] == 0)
+		{
+			a[ceng + 1][2] = 1;
+			digui(ceng + 1, 2, n);
+			a[ceng + 1][2] = 0;
+		}
+		if (a[ceng + 1][1] == 0 && (a[ceng + 1][2] != 2 && a[ceng][1] != 0))
+		{
+			a[ceng + 1][1] = 1;
+			digui(ceng + 1, 1, n);
+			a[ceng + 1][1] = 0;
+		}
+	}
+}
+int main()
+{
+	int n;
+	scanf("%d\n", &n);
+	for (int i = 1; i <= n; i++)
+	{
+		string x;
+		cin >> x;
+		if (x[0] == '.')
+		{
+			a[i][1] = 0;
+		}
+		else
+		{
+			a[i][1] = 2;
+		}
+		if (x[1] == '.')
+		{
+			a[i][2] = 0;
+		}
+		else
+		{
+			a[i][2] = 2;
+		}
+	}
+//	for (int i = 1; i <= n; i++) printf("%d %d\n", a[i][1], a[i][2]);
+	digui(1, 1, n);
+	if (all == 0)
+	{
+		printf("NO");
+	}
+	else
+	{
+		printf("YES\n");
+		printf("%d", all);
+	}
+	return 0;
+}
+
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+typedef struct { int r; int cha; }ce;
+bool cmp(ce a, ce b)
+{
+	return a.cha > b.cha;
+}
+int main()
+{
+	int n;
+	scanf("%d", &n);
+	int a[1000], b[1000];
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &a[i]);
+	}
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &b[i]);
+	}
+	ce x[1000];
+	for (int i = 0; i < n; i++)
+	{
+		if (a[i] > b[i])
+		{
+			x[i].r = 2;
+			x[i].cha = a[i] - b[i];
+		}
+		else
+		{
+			x[i].r = 1;
+			x[i].cha = b[i] - a[i];
+		}
+	}
+	sort(x, x + n, cmp);
+	int count1 = 0, count2 = 0;
+	int a1[1000], b1[1000];
+	for (int i = 0; i < n; i++)
+	{
+		if (x[i].r == 1&&count1<n/2)
+		{
+			a1[count1] = i;
+			count1++;
+		}
+		else
+		if(x[i].r==2&&count2<n/2)
+		{
+			b1[count2] = i;
+			count2++;
+		}
+	}
+	int time = 0;
+	for (int i = 0; i < count1; i++) printf("%d\n", a1[i]);
+	for (int i = 0; i < count2; i++) printf("%d\n", b1[i]);
+	for (int i = 0; i < count1; i++) time += a[a1[i]];
+	for (int i = 0; i < count2; i++) time += b[b1[i]];
+	printf("%d", time);
+	return 0;
+}
